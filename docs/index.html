@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DataPipe Kit — Zero-Dependency Python Extraction &amp; Reporting Toolkit</title>
+  <meta name="description" content="Turn messy HTML tables, JSON-LD, and CSV feeds into deduplicated datasets and interactive HTML client reports using pure Python 3.9+." />
+  <style>
+    :root {
+      --bg: #080c14;
+      --surface: #111827;
+      --surface-2: #172033;
+      --border: #26344d;
+      --text: #eef4ff;
+      --muted: #93a4bf;
+      --accent: #38bdf8;
+      --accent-2: #34d399;
+      --warn: #fbbf24;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: radial-gradient(circle at top right, rgba(56, 189, 248, 0.12), transparent 42%), var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    a { color: inherit; text-decoration: none; }
+    .container { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 0;
+      border-bottom: 1px solid rgba(38, 52, 77, 0.6);
+    }
+    .brand { font-weight: 800; font-size: 1.15rem; letter-spacing: -0.02em; }
+    .brand span { color: var(--accent); }
+    .nav-links { display: flex; gap: 22px; font-size: 0.94rem; color: var(--muted); }
+    .nav-links a:hover { color: var(--text); }
+    .hero { padding: 72px 0 54px; text-align: center; }
+    .pill {
+      display: inline-block;
+      padding: 5px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      background: rgba(56, 189, 248, 0.08);
+      color: var(--accent);
+      font-size: 0.82rem;
+      font-weight: 600;
+      margin-bottom: 18px;
+    }
+    h1 {
+      margin: 0 auto 18px;
+      max-width: 780px;
+      font-size: clamp(2.1rem, 4.2vw, 3.25rem);
+      line-height: 1.12;
+      letter-spacing: -0.03em;
+    }
+    .subtitle {
+      margin: 0 auto 30px;
+      max-width: 650px;
+      color: var(--muted);
+      font-size: 1.08rem;
+    }
+    .cta-row { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; }
+    .btn {
+      display: inline-block;
+      padding: 13px 24px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.96rem;
+      transition: opacity 0.15s ease;
+    }
+    .btn:hover { opacity: 0.9; }
+    .btn-primary { background: var(--accent); color: #05131f; }
+    .btn-secondary {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+    .code-preview {
+      margin: 46px auto 0;
+      max-width: 820px;
+      text-align: left;
+      background: #0c121e;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px 22px;
+      overflow-x: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.86rem;
+      color: #cfe3ff;
+    }
+    .code-preview .cmd { color: var(--accent-2); }
+    .section { padding: 56px 0; }
+    .section-title { font-size: 1.75rem; margin: 0 0 10px; text-align: center; }
+    .section-sub { color: var(--muted); text-align: center; margin: 0 0 36px; }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+    }
+    .card h3 { margin: 0 0 8px; font-size: 1.1rem; }
+    .card p { margin: 0; color: var(--muted); font-size: 0.94rem; }
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 22px;
+      max-width: 780px;
+      margin: 0 auto;
+    }
+    .price-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .price-card.featured {
+      border-color: var(--accent);
+      background: linear-gradient(180deg, rgba(56, 189, 248, 0.08), var(--surface));
+    }
+    .price-num { font-size: 2.3rem; font-weight: 800; margin: 10px 0 4px; }
+    .price-note { color: var(--muted); font-size: 0.85rem; margin-bottom: 18px; }
+    ul.features { list-style: none; padding: 0; margin: 0 0 24px; }
+    ul.features li {
+      padding: 6px 0;
+      font-size: 0.93rem;
+      color: #d6e2f5;
+    }
+    ul.features li::before {
+      content: "✓ ";
+      color: var(--accent-2);
+      font-weight: 700;
+    }
+    .faq { max-width: 760px; margin: 0 auto; display: grid; gap: 14px; }
+    .faq-item {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 20px;
+    }
+    .faq-item strong { display: block; margin-bottom: 6px; }
+    .faq-item p { margin: 0; color: var(--muted); font-size: 0.93rem; }
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 28px 0 44px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <nav>
+      <a class="brand" href="#">DataPipe<span>Kit</span></a>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="./demo/report.html">Live Demo</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#faq">FAQ</a>
+      </div>
+    </nav>
+
+    <section class="hero">
+      <div class="pill">Pure Python 3.9+ · Zero External Dependencies · Offline Ready</div>
+      <h1>Turn messy web tables &amp; CSV feeds into clean client deliverables in one command.</h1>
+      <p class="subtitle">
+        A production-ready Python toolkit for freelancers, data ops engineers, and indie developers:
+        extract HTML tables &amp; JSON-LD, deduplicate &amp; normalize records, and export Excel-ready CSV plus an interactive HTML report.
+      </p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="#pricing">Get DataPipe Kit — $19</a>
+        <a class="btn btn-secondary" href="./demo/report.html">View Live Interactive Report</a>
+      </div>
+      <pre class="code-preview"><span class="cmd">$ python3 -m datapipe pipeline catalog.html \
+    --out-dir ./deliverable \
+    --required Vendor --dedupe-by Vendor \
+    --price-fields "Monthly Price" --email-fields "Contact Email" \
+    --url-fields Website --drop-invalid-emails</span>
+
+Pipeline done: 6 -&gt; 3 rows; wrote cleaned.csv, cleaned.json, report.html in ./deliverable</pre>
+    </section>
+
+    <section id="features" class="section">
+      <h2 class="section-title">What’s Inside the Kit</h2>
+      <p class="section-sub">Built cleanly with Python stdlib — zero pip conflicts, zero cloud lock-in.</p>
+      <div class="grid-3">
+        <div class="card">
+          <h3>1. Structured Extractor</h3>
+          <p>Extracts HTML tables, meta/OpenGraph tags, headings, resolved links, and JSON-LD schemas from local files or public URLs with exponential-backoff retries.</p>
+        </div>
+        <div class="card">
+          <h3>2. Normalizer &amp; Deduper</h3>
+          <p>Parses messy currency strings (<code>$1,250.00</code>, <code>HK$380</code>), normalizes URLs &amp; email casing, drops missing keys, and emits UTF-8 BOM CSV for Excel.</p>
+        </div>
+        <div class="card">
+          <h3>3. Interactive Client Report</h3>
+          <p>Generates a standalone dark-mode HTML report with KPI cards, instant multi-column live search, numeric/text sorting, and one-click filtered CSV download.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="pricing" class="section">
+      <h2 class="section-title">Simple One-Time Pricing</h2>
+      <p class="section-sub">Pay once, run locally forever. Instant ZIP download after checkout.</p>
+      <div class="pricing-grid">
+        <div class="price-card">
+          <div>
+            <h3>Indie License</h3>
+            <div class="price-num">$19</div>
+            <div class="price-note">One-time payment · Personal &amp; single-seat dev use</div>
+            <ul class="features">
+              <li>Full Python source package (<code>datapipe_kit</code>)</li>
+              <li>4 CLI commands: extract, clean, report, pipeline</li>
+              <li>Unit test suite &amp; sample catalog benchmark</li>
+              <li>Lifetime local usage &amp; v1.x updates</li>
+            </ul>
+          </div>
+          <a class="btn btn-secondary" href="#REPLACE_WITH_CREEM_INDIE_CHECKOUT_URL">Buy Indie — $19</a>
+        </div>
+        <div class="price-card featured">
+          <div>
+            <h3>Pro Commercial Kit</h3>
+            <div class="price-num">$39</div>
+            <div class="price-note">One-time payment · Unlimited client delivery rights</div>
+            <ul class="features">
+              <li>Everything in Indie License</li>
+              <li>Commercial license for unlimited freelance/agency client deliverables</li>
+              <li>White-label HTML report template customization</li>
+              <li>Priority bugfix &amp; setup support via email</li>
+            </ul>
+          </div>
+          <a class="btn btn-primary" href="#REPLACE_WITH_CREEM_PRO_CHECKOUT_URL">Buy Pro Commercial — $39</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq" class="section">
+      <h2 class="section-title">Frequently Asked Questions</h2>
+      <div class="faq">
+        <div class="faq-item">
+          <strong>Does this require API keys or third-party pip packages?</strong>
+          <p>No. DataPipe Kit runs entirely on the Python 3.9+ standard library. No paid API keys, no browser driver setup, and no external dependencies are required.</p>
+        </div>
+        <div class="faq-item">
+          <strong>What files do I receive after purchase?</strong>
+          <p>You receive <code>datapipe-kit-v1.0.zip</code> containing the modular Python package, CLI entrypoint, sample HTML input, generated report example, and full unit tests.</p>
+        </div>
+        <div class="faq-item">
+          <strong>How do I request support or a refund?</strong>
+          <p>Contact support at <code>REPLACE_WITH_YOUR_SUPPORT_EMAIL</code> within 14 days with your order ID for setup help or refund inquiries.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      DataPipe Kit v1.0 · Digital Software Product ·
+      <a href="./terms.html">Terms</a> ·
+      <a href="./privacy.html">Privacy</a> ·
+      Support: REPLACE_WITH_YOUR_SUPPORT_EMAIL
+    </footer>
+  </div>
+</body>
+</html>

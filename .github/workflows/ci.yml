@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run unit tests
+        run: python3 -m unittest discover -s tests -v
+      - name: Smoke test CLI pipeline
+        run: |
+          python3 -m datapipe pipeline examples/sample_catalog.html \
+            --out-dir /tmp/datapipe_ci_out \
+            --required Vendor \
+            --dedupe-by Vendor \
+            --price-fields "Monthly Price" \
+            --email-fields "Contact Email" \
+            --url-fields Website \
+            --drop-invalid-emails
+          test -f /tmp/datapipe_ci_out/cleaned.csv
+          test -f /tmp/datapipe_ci_out/cleaned.json
+          test -f /tmp/datapipe_ci_out/report.html

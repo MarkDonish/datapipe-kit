@@ -29,14 +29,17 @@
     .container { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
     nav {
       display: flex;
+      flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
+      gap: 12px;
       padding: 20px 0;
       border-bottom: 1px solid rgba(38, 52, 77, 0.6);
     }
     .brand { font-weight: 800; font-size: 1.15rem; letter-spacing: -0.02em; }
     .brand span { color: var(--accent); }
-    .nav-links { display: flex; gap: 22px; font-size: 0.94rem; color: var(--muted); }
+    .nav-links { display: flex; flex-wrap: wrap; gap: 18px; font-size: 0.94rem; color: var(--muted); }
+    .nav-links a { white-space: nowrap; }
     .nav-links a:hover { color: var(--text); }
     .hero { padding: 72px 0 54px; text-align: center; }
     .pill {
